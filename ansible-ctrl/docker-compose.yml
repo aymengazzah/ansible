@@ -1,0 +1,37 @@
+#
+
+secrets:
+  ansible_ssh_key-v1.0:
+    external: true
+  ansible_password-v1.0:
+    external: true
+
+version: '3'
+services:
+  ansible-ctrl:
+    image: ansible-ctrl:1.0
+    hostname: 'ansible-ctrl'
+    container_name: ansible-ctrl
+    extra_hosts:
+      - vm-fbx-test-01=192.168.1.221
+      - vm-fbx-test-01=192.168.1.222
+    secrets:
+      - source: ansible_ssh_key-v1.0
+        target: /ansible_ssh_key-v1.0
+        uid: "2000"
+        gid: "2000"
+        mode: 0600
+      - source: ansible_password-v1.0
+        target: /ansible_password-v1.0
+        uid: "2000"
+        gid: "2000"
+        mode: 0600
+    volumes:
+      - ../ansible-projetcs/ansible-ag:/ansible-project
+    environment:
+      - ANSIBLE_USERNAME=ansible-ag
+      - ANSIBLE_PRIV_KEY_FILE=/ansible_ssh_key-v1.0
+      - ANSIBLE_VAULT_PASSWORD_FILE=/ansible_password-v1.0
+      - ANSIBLE_HOST_KEY_CHECKING=False
+      - ANSIBLE_INVENTORY_FILE=/ansible-project/inventory/hosts.ini
+      - ANSIBLE_ROLES_PATH=/ansible-project/roles

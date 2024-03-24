@@ -1,0 +1,3 @@
+# Ignore the contents of the ansible-projetcs directory
+ansible-projetcs/*
+*key*
